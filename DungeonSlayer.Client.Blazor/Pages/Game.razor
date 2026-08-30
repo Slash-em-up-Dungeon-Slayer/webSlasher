@@ -1,5 +1,6 @@
-@page "/game"
-@using Microsoft.JSInterop
+@* @page "/game"
+@using global::Blazor.Extensions.Canvas
+@using global::Blazor.Extensions.Canvas.Canvas2D
 @using Microsoft.JSInterop
 @using DungeonSlayer.Client.Blazor.Services
 @inject IJSRuntime JsRuntime
@@ -8,8 +9,7 @@
 @inject NavigationManager Nav
 
 <div style="position:relative; width:100vw; height:100vh; background:#1a1a2e; overflow:hidden;">
-    <canvas id="gameCanvas" style="display:block; width:100%; height:100%;"></canvas>
-    <!-- Мобильные джойстики (простые зоны) -->
+    <canvas id="gameCanvas" @ref="canvasReference" style="display:block; width:100%; height:100%;"></canvas>
     <div id="moveZone" style="position:absolute; bottom:20px; left:20px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.2); touch-action:none;"></div>
     <div id="aimZone" style="position:absolute; bottom:20px; right:20px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.2); touch-action:none;"></div>
 </div>
@@ -25,6 +25,8 @@
 }
 
 @code {
+    private ElementReference canvasReference;
+    private Canvas2DContext? context;
     private GameLoop? gameLoop;
     private bool showLevelComplete = false;
     private int lastKills;
@@ -40,14 +42,16 @@
                 return;
             }
 
-            // Инициализируем Canvas
-            var canvas = await JsRuntime.InvokeAsync<IJSObjectReference>("document.getElementById", "gameCanvas");
-            var canvasRef = new Blazor.Extensions.Canvas.CanvasReference(canvas);
-            var ctx = new Blazor.Extensions.Canvas.Canvas2DContext(canvasRef);
-            await ctx.InitializeAsync();
+            // Создаём контекст из ссылки на элемент
+            // context = await canvasReference.CreateCanvas2DAsync();
 
-            // Создаём игровой цикл, передаём API для сохранения результата
-            gameLoop = new GameLoop(ctx, Api, OnLevelComplete, JsRuntime);
+            // Используем IJSRuntime для создания контекста
+            context = new Canvas2DContext(JsRuntime, canvasReference);
+            // Инициализация контекста (если нужна)
+            await context.InitializeAsync();
+
+
+            gameLoop = new GameLoop(context, Api, OnLevelComplete, JsRuntime);
             gameLoop.Start();
         }
     }
@@ -69,5 +73,33 @@
     {
         if (gameLoop != null)
             await gameLoop.StopAsync();
+    }
+} *@
+
+            @page "/game"
+@using DungeonSlayer.Client.Blazor.Services
+@inject AuthState AuthState
+@inject NavigationManager Nav
+
+<div style="text-align:center; padding:50px; color:white; background:#1a1a2e; min-height:100vh;">
+    <h1>Game Page (Work in Progress)</h1>
+    <p>Canvas initialization is temporarily disabled.</p>
+    <button @onclick="GoToProfile" style="padding:10px 20px; font-size:16px; background:#4CAF50; color:white; border:none; border-radius:5px; cursor:pointer;">
+        Go to Profile
+    </button>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (!AuthState.IsAuthenticated)
+        {
+            Nav.NavigateTo("/login");
+        }
+    }
+
+    private void GoToProfile()
+    {
+        Nav.NavigateTo("/profile");
     }
 }

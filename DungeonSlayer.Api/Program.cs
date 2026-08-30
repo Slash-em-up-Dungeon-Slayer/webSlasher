@@ -8,6 +8,12 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Явно указываем путь к appsettings.json в папке проекта
+    builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -38,7 +44,16 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]!);
+//var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]!);
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtKey))
+{
+    // Запасной ключ для отладки (НЕ ИСПОЛЬЗУЙТЕ В ПРОДАКШЕНЕ!)
+    jwtKey = "YourSuperSecretKeyAtLeast32CharsLong!";
+    //throw new InvalidOperationException("JWT Key is missing in appsettings.json");
+}
+var key = Encoding.ASCII.GetBytes(jwtKey);
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -80,11 +95,18 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseStaticFiles(); // если статика в wwwroot сервера
+    app.MapFallbackToFile("index.html");
 }
 
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStaticFiles(); // чтобы раздавать статику из wwwroot
+app.MapFallbackToFile("index.html"); // чтобы все не-API запросы вели на index.html клиента
+
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())

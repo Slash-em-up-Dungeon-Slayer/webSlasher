@@ -1,0 +1,6 @@
+MSBUILD : error MSB1008: можно указать только один проект.
+    Полная командная строка: 'C:\Program Files\dotnet\sdk\10.0.400\MSBuild.exe -maxcpucount --verbosity:m -tlp:default=auto --property:NuGetInteractive=false --target:Clean --verbosity:normal --nologo restore DungeonSlayer.sln -distributedlogger:Microsoft.DotNet.Cli.Commands.MSBuild.MSBuildLogger,C:\Program Files\dotnet\sdk\10.0.400\dotnet.dll*Microsoft.DotNet.Cli.Commands.MSBuild.MSBuildForwardingLogger,C:\Program Files\dotnet\sdk\10.0.400\dotnet.dll'
+  Параметры, добавленные файлами откликов:
+Ключ: DungeonSlayer.sln
+
+Для переключения синтаксиса введите "MSBuild -help"

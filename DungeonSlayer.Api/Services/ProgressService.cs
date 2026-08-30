@@ -1,5 +1,7 @@
+using DungeonSlayer.Api.Configs;
 using DungeonSlayer.Api.Data;
 using DungeonSlayer.Shared.Configs;
+using DungeonSlayer.Shared.Dtos;
 using DungeonSlayer.Shared.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -69,13 +71,4 @@ public class ProgressService
     {
         public static int RequiredXpForLevel(int level) => (int)(100 * Math.Pow(level, 1.5));
     }
-}
-
-public class RunResultDto
-{
-    public int LevelNumber { get; set; }
-    public int KillCount { get; set; }
-    public int XpGained { get; set; }
-    public float DurationSeconds { get; set; }
-    public DateTime ClientTimestampUtc { get; set; }
 }

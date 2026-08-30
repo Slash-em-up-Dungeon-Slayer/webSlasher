@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>DungeonRush</title>
+    <base href="/" />
+    <link rel="icon" href="data:," />
+    <!--<link href="css/app.css" rel="stylesheet" />-->
+</head>
+<body>
+    <div id="app">Loading...</div>
+    <div id="blazor-error-ui">
+        An error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+
+    <script>
+        // Обработчики ввода
+        let moveDir = { x: 0, y: 0 };
+        let aimDir = { x: 0, y: 0 };
+        let shoot = false;
+
+        window.attachKeyboardHandler = function(dotNetRef) {
+            document.addEventListener('keydown', (e) => {
+                switch(e.key.toLowerCase()) {
+                    case 'w': moveDir.y = -1; break;
+                    case 's': moveDir.y = 1; break;
+                    case 'a': moveDir.x = -1; break;
+                    case 'd': moveDir.x = 1; break;
+                }
+                dotNetRef.invokeMethodAsync('SetMoveDirection', moveDir.x, moveDir.y);
+            });
+            document.addEventListener('keyup', (e) => {
+                switch(e.key.toLowerCase()) {
+                    case 'w': case 's': moveDir.y = 0; break;
+                    case 'a': case 'd': moveDir.x = 0; break;
+                }
+                dotNetRef.invokeMethodAsync('SetMoveDirection', moveDir.x, moveDir.y);
+            });
+        };
+
+        window.attachMouseHandler = function(dotNetRef) {
+            const canvas = document.getElementById('gameCanvas');
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                // Передаём направление от центра экрана
+                const cx = rect.width / 2;
+                const cy = rect.height / 2;
+                dotNetRef.invokeMethodAsync('SetAimDirection', x - cx, y - cy);
+            });
+            canvas.addEventListener('mousedown', (e) => {
+                if (e.button === 0) {
+                    shoot = true;
+                    dotNetRef.invokeMethodAsync('SetShoot', true);
+                }
+            });
+            canvas.addEventListener('mouseup', (e) => {
+                if (e.button === 0) {
+                    shoot = false;
+                    dotNetRef.invokeMethodAsync('SetShoot', false);
+                }
+            });
+            canvas.addEventListener('mouseleave', () => {
+                shoot = false;
+                dotNetRef.invokeMethodAsync('SetShoot', false);
+            });
+        };
+
+        window.attachTouchHandlers = function(dotNetRef) {
+            const moveZone = document.getElementById('moveZone');
+            const aimZone = document.getElementById('aimZone');
+            const canvas = document.getElementById('gameCanvas');
+
+            // Движение
+            moveZone.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = moveZone.getBoundingClientRect();
+                const cx = rect.left + rect.width/2;
+                const cy = rect.top + rect.height/2;
+                const dx = touch.clientX - cx;
+                const dy = touch.clientY - cy;
+                const len = Math.sqrt(dx*dx + dy*dy);
+                if (len > 10) {
+                    dotNetRef.invokeMethodAsync('SetMoveDirection', dx/len, dy/len);
+                }
+            }, {passive: false});
+            moveZone.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = moveZone.getBoundingClientRect();
+                const cx = rect.left + rect.width/2;
+                const cy = rect.top + rect.height/2;
+                const dx = touch.clientX - cx;
+                const dy = touch.clientY - cy;
+                const len = Math.sqrt(dx*dx + dy*dy);
+                if (len > 10) {
+                    dotNetRef.invokeMethodAsync('SetMoveDirection', dx/len, dy/len);
+                } else {
+                    dotNetRef.invokeMethodAsync('SetMoveDirection', 0, 0);
+                }
+            }, {passive: false});
+            moveZone.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                dotNetRef.invokeMethodAsync('SetMoveDirection', 0, 0);
+            }, {passive: false});
+
+            // Прицеливание и стрельба
+            aimZone.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = aimZone.getBoundingClientRect();
+                const cx = rect.left + rect.width/2;
+                const cy = rect.top + rect.height/2;
+                const dx = touch.clientX - cx;
+                const dy = touch.clientY - cy;
+                dotNetRef.invokeMethodAsync('SetAimDirection', dx, dy);
+                dotNetRef.invokeMethodAsync('SetShoot', true);
+            }, {passive: false});
+            aimZone.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = aimZone.getBoundingClientRect();
+                const cx = rect.left + rect.width/2;
+                const cy = rect.top + rect.height/2;
+                const dx = touch.clientX - cx;
+                const dy = touch.clientY - cy;
+                dotNetRef.invokeMethodAsync('SetAimDirection', dx, dy);
+            }, {passive: false});
+            aimZone.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                dotNetRef.invokeMethodAsync('SetAimDirection', 0, 0);
+                dotNetRef.invokeMethodAsync('SetShoot', false);
+            }, {passive: false});
+        };
+
+        window.removeInputHandlers = function() {
+            // Можно очистить, но для упрощения оставляем
+        };
+    </script>
+</body>
+</html>

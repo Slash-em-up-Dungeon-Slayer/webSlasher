@@ -46,3 +46,7 @@ build_metadata.AdditionalFiles.CssScope =
 [C:/Users/r00t/Documents/Работа/code_vsc_js/code/Learning/Slash-em up Dungeon Slayer/webSlasher/DungeonSlayer.Client.Blazor/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = RHVuZ2VvblNsYXllci5DbGllbnQuQmxhem9yXFNoYXJlZFxNYWluTGF5b3V0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/r00t/Documents/Работа/code_vsc_js/code/Learning/Slash-em up Dungeon Slayer/webSlasher/DungeonSlayer.Client.Blazor/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = RHVuZ2VvblNsYXllci5DbGllbnQuQmxhem9yXF9JbXBvcnRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 

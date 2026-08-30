@@ -1,4 +1,7 @@
-@using DungeonSlayer.Client.Blazor.Pages
+@using DungeonSlayer.Client.Blazor
+@using DungeonSlayer.Client.Blazor.Shared
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />

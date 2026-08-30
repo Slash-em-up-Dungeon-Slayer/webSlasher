@@ -2,6 +2,7 @@ using System.Security.Claims;
 using DungeonSlayer.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using DungeonSlayer.Shared.Dtos;
 
 namespace DungeonSlayer.Api.Controllers;
 
