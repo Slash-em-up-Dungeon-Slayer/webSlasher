@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DungeonSlayer.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+67f5ab5ca1f4825bf8c80c5229a4d937aabfcfa5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bcfdece1c77e5027ba87e9310a48f8a96a066362")]
 [assembly: System.Reflection.AssemblyProductAttribute("DungeonSlayer.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DungeonSlayer.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
