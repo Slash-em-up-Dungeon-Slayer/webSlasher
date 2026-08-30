@@ -1,0 +1,11 @@
+{
+  "ConnectionStrings": {
+    "Default": "Host=localhost;Port=5432;Database=dungeonrush;Username=dr_user;Password=REPLACE_ME"
+  },
+  "Jwt": {
+    "Key": "REPLACE_WITH_LOCAL_DEV_SECRET_MIN_32_CHARS"
+  },
+  "Cors": {
+    "AllowedOrigin": "http://localhost:8080"
+  }
+}
