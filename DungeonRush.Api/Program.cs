@@ -57,6 +57,23 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
+// ---------- Режим применения миграций ----------
+// Запускается явной командой: `dotnet DungeonRush.Api.dll migrate`
+// (или `docker compose run --rm api dotnet DungeonRush.Api.dll migrate`).
+// Намеренно НЕ применяем миграции автоматически при каждом старте приложения —
+// при нескольких репликах API это создаёт гонку за схему БД. Миграции —
+// отдельный контролируемый шаг деплоя (см. docs/deployment-runbook.md).
+if (args.Contains("migrate"))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    Console.WriteLine("Применяю EF Core миграции...");
+    db.Database.Migrate();
+    Console.WriteLine("Миграции успешно применены.");
+    return;
+}
+
 // ---------- HTTPS / HSTS ----------
 if (!app.Environment.IsDevelopment())
 {
