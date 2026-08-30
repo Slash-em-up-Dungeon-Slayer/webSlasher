@@ -1,5 +1,7 @@
 @page "/game"
-@using DungeonRush.Client.Blazor.Services
+@using Microsoft.JSInterop
+@using Microsoft.JSInterop
+@using DungeonSlayer.Client.Blazor.Services
 @inject IJSRuntime JsRuntime
 @inject ApiClient Api
 @inject AuthState AuthState
@@ -45,7 +47,7 @@
             await ctx.InitializeAsync();
 
             // Создаём игровой цикл, передаём API для сохранения результата
-            gameLoop = new GameLoop(ctx, Api, OnLevelComplete);
+            gameLoop = new GameLoop(ctx, Api, OnLevelComplete, JsRuntime);
             gameLoop.Start();
         }
     }

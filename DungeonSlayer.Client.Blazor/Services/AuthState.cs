@@ -1,4 +1,4 @@
-namespace DungeonRush.Client.Blazor.Services;
+namespace DungeonSlayer.Client.Blazor.Services;
 
 public class AuthState
 {

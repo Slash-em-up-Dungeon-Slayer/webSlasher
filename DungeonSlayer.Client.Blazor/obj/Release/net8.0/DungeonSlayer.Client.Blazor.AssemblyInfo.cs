@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DungeonSlayer.Client.Blazor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b1e755f9350d1210189c2c81748c97a793728276")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b5412b270da6cbb6b189437257c847d3a4f43528")]
 [assembly: System.Reflection.AssemblyProductAttribute("DungeonSlayer.Client.Blazor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DungeonSlayer.Client.Blazor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

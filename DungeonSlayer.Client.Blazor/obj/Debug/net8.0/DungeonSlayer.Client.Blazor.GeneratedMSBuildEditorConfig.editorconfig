@@ -1,4 +1,8 @@
 is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
 build_property.TargetFramework = net8.0
 build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v8.0
@@ -9,12 +13,12 @@ build_property.InvariantGlobalization = false
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
 build_property.EntryPointFilePath = 
-build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = browser
 build_property.RootNamespace = DungeonSlayer.Client.Blazor
 build_property.RootNamespace = DungeonSlayer.Client.Blazor
 build_property.ProjectDir = C:\Users\r00t\Documents\Работа\code_vsc_js\code\Learning\Slash-em up Dungeon Slayer\webSlasher\DungeonSlayer.Client.Blazor\
 build_property.EnableComHosting = 
-build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
@@ -22,6 +26,10 @@ build_property.MSBuildProjectDirectory = C:\Users\r00t\Documents\Работа\co
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/r00t/Documents/Работа/code_vsc_js/code/Learning/Slash-em up Dungeon Slayer/webSlasher/DungeonSlayer.Client.Blazor/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/r00t/Documents/Работа/code_vsc_js/code/Learning/Slash-em up Dungeon Slayer/webSlasher/DungeonSlayer.Client.Blazor/Pages/Game.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcR2FtZS5yYXpvcg==

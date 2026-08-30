@@ -1,8 +1,9 @@
+using System.Net.Http.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
-namespace DungeonRush.Client.Blazor.Services;
+namespace DungeonSlayer.Client.Blazor.Services;
 
 public class ApiClient
 {

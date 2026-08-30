@@ -1,5 +1,6 @@
 @page "/login"
-@using DungeonRush.Client.Blazor.Services
+@using Microsoft.AspNetCore.Components.Forms
+@using DungeonSlayer.Client.Blazor.Services
 @inject ApiClient Api
 @inject AuthState AuthState
 @inject NavigationManager Nav
@@ -39,7 +40,7 @@
                 Nav.NavigateTo("/profile");
             }
         }
-        catch (Exception ex)
+        catch
         {
             error = "Invalid credentials";
         }

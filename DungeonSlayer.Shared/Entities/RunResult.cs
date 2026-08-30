@@ -8,6 +8,6 @@ public class RunResult
     public int KillCount { get; set; }
     public int XpGained { get; set; }
     public float DurationSeconds { get; set; }
-    public DateTime ClientTimestampUts { get; set; }
+    public DateTime ClientTimestampUtc { get; set; }
     public DateTime ServerRecordedAtUtc { get; set; } = DateTime.UtcNow;
 }

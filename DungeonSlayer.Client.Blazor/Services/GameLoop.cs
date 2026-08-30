@@ -1,10 +1,10 @@
 using Blazor.Extensions.Canvas;
 using Blazor.Extensions.Canvas.Canvas2D;
-using DungeonRush.Shared.Configs;
-using DungeonRush.Shared.Enums;
+using DungeonSlayer.Shared.Configs;
+using DungeonSlayer.Shared.Enums;
 using Microsoft.JSInterop;
 
-namespace DungeonRush.Client.Blazor.Services;
+namespace DungeonSlayer.Client.Blazor.Services;
 
 public class GameLoop : IDisposable
 {
@@ -125,14 +125,11 @@ public class GameLoop : IDisposable
     {
         _levelDuration += dt;
 
-        // Обновление игрока
         _player.Position += _moveDir * PLAYER_SPEED * dt;
-        _player.Position = Clamp(_player.Position, -1000, 1000); // границы уровня
+        _player.Position = Clamp(_player.Position, -1000, 1000);
 
-        // Неуязвимость
         if (_invulnerabilityTimer > 0) _invulnerabilityTimer -= dt;
 
-        // Стрельба
         _shootCooldown -= dt;
         if (_shootPressed && _shootCooldown <= 0 && _aimDir.LengthSquared() > 0.01f)
         {
@@ -140,7 +137,6 @@ public class GameLoop : IDisposable
             _shootCooldown = SHOOT_INTERVAL;
         }
 
-        // Обновление снарядов
         for (int i = _projectiles.Count - 1; i >= 0; i--)
         {
             var p = _projectiles[i];
@@ -151,7 +147,6 @@ public class GameLoop : IDisposable
                 continue;
             }
 
-            // Проверка попадания во врагов
             bool hit = false;
             for (int j = _enemies.Count - 1; j >= 0; j--)
             {
@@ -163,7 +158,6 @@ public class GameLoop : IDisposable
                     {
                         _enemies.RemoveAt(j);
                         _enemiesKilled++;
-                        // начисление опыта игроку (временно храним)
                         _player.RunExperience += e.XpReward;
                     }
                     hit = true;
@@ -174,14 +168,12 @@ public class GameLoop : IDisposable
                 _projectiles.RemoveAt(i);
         }
 
-        // Обновление врагов (движение к игроку)
         foreach (var e in _enemies)
         {
             var dir = (_player.Position - e.Position).Normalized();
             e.Position += dir * e.Speed * dt;
         }
 
-        // Проверка столкновения врагов с игроком
         foreach (var e in _enemies)
         {
             if (Vector2.Distance(_player.Position, e.Position) < (PLAYER_SIZE + ENEMY_SIZE) / 2)
@@ -192,8 +184,6 @@ public class GameLoop : IDisposable
                     _invulnerabilityTimer = 0.5f;
                     if (_player.HP <= 0)
                     {
-                        // Игрок умер — завершаем уровень с неудачей? Для MVP просто перезапускаем
-                        // Но мы сделаем просто выход в профиль
                         _running = false;
                         _onLevelComplete?.Invoke(_enemiesKilled, _player.RunExperience);
                         return;
@@ -203,19 +193,16 @@ public class GameLoop : IDisposable
             }
         }
 
-        // Спавн врагов
         if (_enemiesSpawned < _config.TotalEnemiesToSpawn && _enemies.Count < _config.MaxAliveEnemies)
         {
             SpawnEnemy();
             _enemiesSpawned++;
         }
 
-        // Проверка завершения уровня (все враги заспавнены и убиты)
         if (_enemiesSpawned >= _config.TotalEnemiesToSpawn && _enemies.Count == 0 && _projectiles.Count == 0)
         {
-            // Уровень завершён
             _running = false;
-            // Отправляем результат на сервер
+            // Отправка результата на сервер (делаем синхронно, без await, чтобы не блокировать)
             try
             {
                 var result = new RunResultDto
@@ -226,9 +213,9 @@ public class GameLoop : IDisposable
                     DurationSeconds = _levelDuration,
                     ClientTimestampUtc = DateTime.UtcNow
                 };
-                await _api.PostAsync<object>("api/players/runs", result);
+                _ = _api.PostAsync<object>("api/players/runs", result); // игнорируем Task
             }
-            catch { /* игнорируем ошибки сети */ }
+            catch { }
             _onLevelComplete?.Invoke(_enemiesKilled, _player.RunExperience);
         }
     }
