@@ -1,0 +1,61 @@
+@page "/profile"
+@using DungeonRush.Client.Blazor.Services
+@inject ApiClient Api
+@inject AuthState AuthState
+@inject NavigationManager Nav
+
+@if (progress == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <h3>Profile</h3>
+    <p>Email: @AuthState.Email</p>
+    <p>Level: @progress.Level</p>
+    <p>Experience: @progress.Experience</p>
+    <p>Skill Points: @progress.SkillPoints</p>
+    <p>Max HP: @progress.MaxHealthPoints</p>
+    <p>Highest Level Completed: @progress.HighestLevelCompleted</p>
+    <p>Total Kills: @progress.TotalKills</p>
+    <button @onclick="StartGame">Start</button>
+    <button @onclick="Logout">Logout</button>
+}
+
+@code {
+    private ProgressData? progress;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!AuthState.IsAuthenticated)
+            Nav.NavigateTo("/login");
+        else
+            await LoadProgress();
+    }
+
+    private async Task LoadProgress()
+    {
+        progress = await Api.GetAsync<ProgressData>("api/players/me/progress");
+    }
+
+    private void StartGame()
+    {
+        Nav.NavigateTo("/game");
+    }
+
+    private void Logout()
+    {
+        AuthState.Logout();
+        Nav.NavigateTo("/login");
+    }
+
+    private class ProgressData
+    {
+        public int Level { get; set; }
+        public int Experience { get; set; }
+        public int SkillPoints { get; set; }
+        public int MaxHealthPoints { get; set; }
+        public int HighestLevelCompleted { get; set; }
+        public int TotalKills { get; set; }
+    }
+}

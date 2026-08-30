@@ -1,0 +1,71 @@
+@page "/game"
+@using DungeonRush.Client.Blazor.Services
+@inject IJSRuntime JsRuntime
+@inject ApiClient Api
+@inject AuthState AuthState
+@inject NavigationManager Nav
+
+<div style="position:relative; width:100vw; height:100vh; background:#1a1a2e; overflow:hidden;">
+    <canvas id="gameCanvas" style="display:block; width:100%; height:100%;"></canvas>
+    <!-- Мобильные джойстики (простые зоны) -->
+    <div id="moveZone" style="position:absolute; bottom:20px; left:20px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.2); touch-action:none;"></div>
+    <div id="aimZone" style="position:absolute; bottom:20px; right:20px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.2); touch-action:none;"></div>
+</div>
+
+@if (showLevelComplete)
+{
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border-radius:8px; text-align:center; z-index:10;">
+        <h3>Level Complete!</h3>
+        <p>Kills: @lastKills</p>
+        <p>XP Gained: @lastXp</p>
+        <button @onclick="GoToProfile">Back to Profile</button>
+    </div>
+}
+
+@code {
+    private GameLoop? gameLoop;
+    private bool showLevelComplete = false;
+    private int lastKills;
+    private int lastXp;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (!AuthState.IsAuthenticated)
+            {
+                Nav.NavigateTo("/login");
+                return;
+            }
+
+            // Инициализируем Canvas
+            var canvas = await JsRuntime.InvokeAsync<IJSObjectReference>("document.getElementById", "gameCanvas");
+            var canvasRef = new Blazor.Extensions.Canvas.CanvasReference(canvas);
+            var ctx = new Blazor.Extensions.Canvas.Canvas2DContext(canvasRef);
+            await ctx.InitializeAsync();
+
+            // Создаём игровой цикл, передаём API для сохранения результата
+            gameLoop = new GameLoop(ctx, Api, OnLevelComplete);
+            gameLoop.Start();
+        }
+    }
+
+    private void OnLevelComplete(int kills, int xp)
+    {
+        lastKills = kills;
+        lastXp = xp;
+        showLevelComplete = true;
+        StateHasChanged();
+    }
+
+    private void GoToProfile()
+    {
+        Nav.NavigateTo("/profile");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (gameLoop != null)
+            await gameLoop.StopAsync();
+    }
+}

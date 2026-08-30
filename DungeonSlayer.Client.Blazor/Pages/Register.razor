@@ -1,0 +1,42 @@
+@page "/register"
+@using DungeonRush.Client.Blazor.Services
+@inject ApiClient Api
+@inject NavigationManager Nav
+
+<h3>Register</h3>
+
+<EditForm Model="@model" OnValidSubmit="@HandleRegister">
+    <div>
+        <label>Email:</label>
+        <InputText @bind-Value="model.Email" />
+    </div>
+    <div>
+        <label>Password:</label>
+        <InputText type="password" @bind-Value="model.Password" />
+    </div>
+    <button type="submit">Register</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <div style="color:red">@error</div>
+}
+
+@code {
+    private class RegisterModel { public string Email { get; set; } = ""; public string Password { get; set; } = ""; }
+    private RegisterModel model = new();
+    private string error = "";
+
+    private async Task HandleRegister()
+    {
+        try
+        {
+            await Api.PostAsync<object>("api/auth/register", model);
+            Nav.NavigateTo("/login?registered=true");
+        }
+        catch
+        {
+            error = "Registration failed. Email may already exist.";
+        }
+    }
+}
