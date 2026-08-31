@@ -195,4 +195,28 @@ dotnet publish DungeonSlayer.Api -c Release
 
 ---
 
+Мы уже создавали дамп проекта ранее — это была команда PowerShell, которая рекурсивно обходит все файлы и сохраняет их содержимое в один текстовый файл. Напомню:
+
+``` bash
+powershell
+Get-ChildItem -Recurse -File | ForEach-Object { "`n`n=== $($_.FullName) ===`n" + (Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue) } | Out-File -FilePath ProjectDump.txt -Encoding UTF8
+```
+Если вы хотите исключить папку .vs (чтобы избежать ошибок доступа к заблокированным файлам), используйте:
+
+```bash
+powershell
+Get-ChildItem -Recurse -File | Where-Object { $_.FullName -notmatch '\\.vs\\' } | ForEach-Object { "`n`n=== $($_.FullName) ===`n" + (Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue) } | Out-File -FilePath ProjectDump.txt -Encoding UTF8
+```
+Если нужно создать дамп в другой кодировке (например, ASCII) или для большого проекта можно использовать -Encoding UTF8 (как выше).
+Также вы можете ограничить глубину, например, только текущую папку без подпапок, но обычно нужен рекурсивный обход.
+
+
+Если файлы слишком большие и дамп весит много, можно исключить бинарные расширения: .dll, .exe, .pdb, .vsidx, .sqlite и т.п. Для этого добавьте фильтр по расширению:
+
+```bash
+powershell
+Get-ChildItem -Recurse -File | Where-Object { $_.Extension -notin @('.dll','.exe','.pdb','.vsidx','.sqlite') -and $_.FullName -notmatch '\\.vs\\' } | ForEach-Object { "`n`n=== $($_.FullName) ===`n" + (Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue) } | Out-File -FilePath ProjectDump.txt -Encoding UTF8
+```
+Эту команду вы можете выполнять из корня проекта. Она создаст файл ProjectDump.txt в текущей папке.
+
 **Приятной игры!** ⚔️
